@@ -379,7 +379,6 @@ function HackTheMatrix(id, host, progressBar) {
 }
 
 function convertArrayOfObjectsToCSV(args) {
-  console.log(args)
   var result, ctr, keys, columnDelimiter, lineDelimiter, data;
 
   data = args.data || null;
@@ -412,7 +411,6 @@ function convertArrayOfObjectsToCSV(args) {
 
 
 function downloadCSV(file, dataIn, keyIn) {
-  console.log(dataIn)
   var csv = convertArrayOfObjectsToCSV({data: dataIn, keys: keyIn});
   if (csv == null)
     return;
