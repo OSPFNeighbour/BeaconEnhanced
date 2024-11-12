@@ -60,6 +60,8 @@ window.addEventListener('message', function (event) {
         showSesFilteredAssets(mapLayer, event.data.response);
       } else if (event.data.layer === 'lhqs') {
         showLhqs(mapLayer, event.data.response);
+      } else if (event.data.layer === 'srbs') {
+        showSrbs(mapLayer, event.data.response);  
       } else if (event.data.layer === 'power-outages') {
         showPowerOutages(mapLayer, event.data.response);
       } else if (event.data.layer === 'hazard-watch') {
@@ -383,6 +385,65 @@ function showLhqs(mapLayer, data) {
     }
   }
   console.info(`added ${count} SES LHQs`);
+}
+
+/**
+ * Shows SES LHQ's.
+ *
+ * @param mapLayer the map layer to add to.
+ * @param data the data to add to the layer.
+ */
+
+function showSrbs(mapLayer, data) {
+  console.info('showing SRB Locations');
+  let count = 0;
+  if (data && data.features) {
+    for (let i = 0; i < data.features.length; i++) {
+      let hq = data.features[i];
+
+      let lat = hq.geometry.coordinates[1];
+      let lon = hq.geometry.coordinates[0];
+
+      let name = hq.properties.rescueOrganisation;
+
+      let unitCode = hq.properties.name;
+
+      let details = `<div id='srbPopUp'>\
+            <div id='lhqCode' style="width:50%;margin:auto;text-align:center;font-weight: bold;">${unitCode}</div>\
+            <div id='lhqNameHolder' style="display:none">Unit Name: <span id='lhqName'>${hq.properties.rescueOrganisation}</span></div>\
+
+            <div id='lhqacredHolder' style="padding-top:10px;width:100%;margin:auto">\
+            <table id='lhqacred' style="width:100%;text-align: center;">\
+            <tr>\
+            <th style="text-align: center;width:100%">Accredited SRB Roles</th>\
+            </tr>\
+            <tr><td>${hq.properties.accreditedFor}</td></tr>
+            </table>\
+            </div>\
+
+            <div id='lhqContactsHolder' style="padding-top:10px;width:100%;margin:auto">\
+            <table id='lhqContacts' style="width:100%;text-align: center;">\
+            <tr>\
+            <td colspan="2" style="font-weight: bold">Contact Details</td>
+            </tr>\
+            <tr>\
+            <th style="text-align: center;width:50%">Name</th>\
+            <th style="text-align: center;width:50%">Detail</th>\
+            </tr>\
+            <tr><td>SOC </td><td>02 111 222</td></tr>
+            </table>\
+            </div>\
+            </div>\
+            </div>`;
+
+      let icon = lighthouseUrl + 'icons/frnsw.png';
+
+      console.debug(`SRB Unit at [${lat},${lon}]: ${name}`);
+      mapLayer.addImageMarker(lat, lon, icon, name, details);
+      count++;
+    }
+  }
+  console.info(`added ${count} SRB units`);
 }
 
 /**
@@ -1598,6 +1659,8 @@ export default class InjectScriptMapManager {
     lighthouseMap.createLayer('power-outages', 1);
     lighthouseMap.createLayer('rfs', 1);
     lighthouseMap.createLayer('lhqs', 3);
+    lighthouseMap.createLayer('srbs', 3);
+
     lighthouseMap.createLayer('ses-assets-filtered', 3);
     lighthouseMap.createLayer('hazard-watch', 3);
 

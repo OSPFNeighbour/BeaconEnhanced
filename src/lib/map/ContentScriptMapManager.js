@@ -182,6 +182,10 @@ const sesIcon = chrome.runtime.getURL('icons/ses_corp.png');
             <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
             <span class="tag-text">Power Outages</span>
             </span>
+            <span id="toggleSRBUnitsBtn" class="label tag tag-lh-filter tag-disabled">
+            <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
+            <span class="tag-text">  Accredited Rescue Units</span>
+            </span>
             </li>
             </ul>
             </li>
@@ -203,6 +207,8 @@ const sesIcon = chrome.runtime.getURL('icons/ses_corp.png');
         //this._registerClickHandler('toggleHazardWatchBtn', 'hazard-watch', this._requestHazardWatchLayerUpdate, 5 * 60000); // every 5 minutes
         this._registerClickHandler('togglePowerOutagesBtn', 'power-outages', this._requestPowerOutagesLayerUpdate, 5 * 60000); // every 5 mins
         this._registerClickHandler('togglelhqsBtn', 'lhqs', this._requestLhqsLayerUpdate, 60 * 60000); // every 60 mins
+        this._registerClickHandler('toggleSRBUnitsBtn', 'lhqs', this._requestSrbLayerUpdate, 60 * 60000); // every 60 mins
+
 
         window.addEventListener('message', function (event) {
             // We only accept messages from background
@@ -301,6 +307,16 @@ const sesIcon = chrome.runtime.getURL('icons/ses_corp.png');
         console.debug('updating LHQs layer');
         $.getJSON(chrome.runtime.getURL('resources/SES_HQs.geojson'), function (data) {
             ContentScriptMapManager._passLayerDataToInject('lhqs', data);
+        }.bind(this))
+    }
+
+    /**
+     * Sends a request to the background script to get the SRB locations.
+     */
+    _requestSrbLayerUpdate() {
+        console.debug('updating SRB Rescue layer');
+        $.getJSON(chrome.runtime.getURL('resources/SRB.geojson'), function (data) {
+            ContentScriptMapManager._passLayerDataToInject('srbs', data);
         }.bind(this))
     }
 
